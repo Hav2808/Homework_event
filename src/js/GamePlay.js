@@ -1,3 +1,5 @@
+import cursors from './cursors';
+
 export default class GamePlay {
   constructor() {
     this.boardSize = 4;
@@ -74,27 +76,6 @@ export default class GamePlay {
     this.cells.indexOf(mole);
   }
 
-  replaceMole(position) {
-    if (position >= 0 && position < this.boardSize ** 2) {
-      const mole = this.container.querySelector('.hole_has-mole');
-      if (mole === null) {
-        // Инициализация. Присвоим текущей ячейки класс hole_has-mole
-        this.activateHole(position);
-      } else {
-        // меняем местами ячейки
-        const targetCell = this.boardEl.children[position];
-
-        const moleIndex = this.cells.indexOf(mole);
-
-        if (moleIndex !== position) {
-          this.boardEl.insertBefore(targetCell, mole);
-          this.boardEl.insertBefore(mole, this.boardEl.children[position]);
-          this.cells = Array.from(this.boardEl.children);
-        }
-      }
-    }
-  }
-
   isActiveHole(position) {
     return this.boardEl.children[position].classList.contains('hole_has-mole');
   }
@@ -108,9 +89,28 @@ export default class GamePlay {
     this.cellClickListeners.push(callback);
   }
 
+  removeCellClickListener(callback) {
+    const index = this.cellClickListeners.indexOf(callback);
+    if (index !== -1) {
+      this.cellClickListeners.splice(index, 1);
+    }
+  }
+
   onCellClick(event) {
     const index = this.cells.indexOf(event.currentTarget);
     this.cellClickListeners.forEach((o) => o.call(null, index));
+  }
+
+  // Display "Game Over" message
+  displayGameOver() {
+    const overlayDiv = document.createElement('div');
+    overlayDiv.classList.add('overlay');
+    const gameOverText = document.createElement('div');
+    gameOverText.classList.add('game-over-text');
+    gameOverText.textContent = 'Game Over';
+
+    overlayDiv.appendChild(gameOverText);
+    this.boardEl.appendChild(overlayDiv);
   }
 
   checkBinding() {

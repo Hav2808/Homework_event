@@ -29,6 +29,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
   grid-column-gap: 2px;
   grid-row-gap: 2px;
+  position: relative;
 }
 
 .cell {
@@ -61,4 +62,22 @@ body {
 .score {
   color: white;
   font-size: 18px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-over-text {
+  font-size: 100px;
+  color: white;
 }
