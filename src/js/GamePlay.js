@@ -1,5 +1,3 @@
-import cursors from './cursors';
-
 export default class GamePlay {
   constructor() {
     this.boardSize = 4;
@@ -42,7 +40,7 @@ export default class GamePlay {
     this.boardEl.classList.add(theme);
     for (let i = 0; i < this.boardSize ** 2; i += 1) {
       const cellEl = document.createElement('div');
-      cellEl.classList.add('hole', 'cell');
+      cellEl.classList.add('hole', 'cell', 'hammer-cursor');
       cellEl.setAttribute('id', `hole${i}`);
       cellEl.addEventListener('click', (event) => this.onCellClick(event));
       this.boardEl.appendChild(cellEl);
@@ -53,7 +51,7 @@ export default class GamePlay {
 
   updateCurrentScore(dead, lost) {
     this.dead.textContent = `Убито кротов: ${dead}`;
-    this.lost.textContent = `Промахов: ${lost}`;
+    this.lost.textContent = `Промахов: ${Math.max(0, lost)}`;
   }
 
   activateHole(position) {
@@ -111,6 +109,17 @@ export default class GamePlay {
 
     overlayDiv.appendChild(gameOverText);
     this.boardEl.appendChild(overlayDiv);
+  }
+
+  showSmashCursor(index) {
+    this.cells[index].classList.remove('hammer-cursor');
+    this.cells[index].classList.add('hammer-smash-cursor');
+    setTimeout(this.restoreHammerCursor.bind(this), 100, index);
+  }
+
+  restoreHammerCursor(index) {
+    this.cells[index].classList.add('hammer-cursor');
+    this.cells[index].classList.remove('hammer-smash-cursor');
   }
 
   checkBinding() {

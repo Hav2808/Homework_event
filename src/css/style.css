@@ -36,6 +36,14 @@ body {
   position: relative;
 }
 
+.cell.hammer-cursor:hover {
+  cursor: url(../img/hammer.png), auto;
+}
+
+.cell.hammer-smash-cursor:hover {
+  cursor: url(../img/hammer_smash.png), auto;
+}
+
 .hole {
   width: 150px;
   height: 150px;

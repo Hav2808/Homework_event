@@ -2,7 +2,7 @@ export default class GameController {
   constructor(gamePlay) {
     this.gamePlay = gamePlay;
     this._dead = 0;
-    this._lost = 0;
+    this._lost = -1;
     this.activeHole = -1;
     this.gameOver = true;
     this.timeActiveHole = 1000;
@@ -13,7 +13,7 @@ export default class GameController {
     this.gamePlay.addCellClickListener(this.onCellClick);
 
     this._dead = 0;
-    this._lost = 0;
+    this._lost = -1;
     this.gameOver = false;
 
     this.gamePlay.drawUi();
@@ -27,22 +27,17 @@ export default class GameController {
       if (this.gameOver) {
         clearInterval(this._mainTimer);
       } else {
-        if (this._lost >= 5) {
-          this.endGame();
-        } else {
-          this.setRandomActiveHole();
-        }
+        this.setRandomActiveHole();
         this._lost += 1; // пропущенный крот идет в поражение
       }
     }, time);
   }
 
   runInterfaceTimer(time) {
-    const interfaceTimer = setInterval(() => {
-      if (this.gameOver) {
-        clearInterval(interfaceTimer);
-      } else {
-        this.gamePlay.updateCurrentScore(this._dead, this._lost);
+    this._interfaceTimer = setInterval(() => {
+      this.gamePlay.updateCurrentScore(this._dead, this._lost);
+      if (this._lost >= 5) {
+        this.endGame();
       }
     }, time);
   }
@@ -63,6 +58,7 @@ export default class GameController {
     } else {
       this._lost += 1;
     }
+    this.gamePlay.showSmashCursor(index);
     clearInterval(this._mainTimer);
     this.runMainTimer(this.timeActiveHole);
     this.setRandomActiveHole();
@@ -70,6 +66,7 @@ export default class GameController {
 
   endGame() {
     this.gameOver = true;
+    clearInterval(this._interfaceTimer);
     clearInterval(this._mainTimer);
     this.gamePlay.removeCellClickListener(this.onCellClick);
     this.gamePlay.displayGameOver();
